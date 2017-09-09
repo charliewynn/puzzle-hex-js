@@ -3,7 +3,7 @@ function Drawing(size, context)
 	this.size = size;
 	this.boardOffset = pt(0,0);
 	this.boardSize = pt(this.size.x-this.boardOffset.x*2, this.size.y-this.boardOffset.y*2);
-	this.context= context;
+	this.context = context;
 	this.render = function(game){
 		this.rectangle(pt(0,0), this.size, colors.blue);
 		this.rectangle(this.boardOffset, this.boardSize, colors.green);
