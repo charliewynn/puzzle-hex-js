@@ -49,7 +49,6 @@ function Game(numHex, canvas){
 
 	}
 	this.TouchHandler = function(e) {
-		alert(1);
 		var touches = event.changedTouches,
 			first = touches[0],
 			type = "";
@@ -76,9 +75,12 @@ function Game(numHex, canvas){
 	canvas.addEventListener('mouseup',   this.MouseUp, false);
 
 	document.addEventListener("touchstart", makeListener(this, this.TouchHandler), true);
-	document.addEventListener("touchmove", this.TouchHandler, true);
-	document.addEventListener("touchend", this.TouchHandler, true);
-	document.addEventListener("touchcancel", this.TouchHandler, true);
+	document.addEventListener("touchmove", makeListener(this, this.TouchHandler), true);
+	document.addEventListener("touchend", makeListener(this, this.TouchHandler), true);
+	document.addEventListener("touchcancel", makeListener(this, this.TouchHandler), true);
+	//document.addEventListener("touchmove", this.TouchHandler, true);
+	//document.addEventListener("touchend", this.TouchHandler, true);
+	//document.addEventListener("touchcancel", this.TouchHandler, true);
 }
 
 function makeListener(self, listener) {
