@@ -1,20 +1,30 @@
-function Drawing(context)
+function Drawing(size, context)
 {
-	this.width = 995;
-	this.height = 459;
+	this.size = size;
+	this.boardOffset = pt(0,0);
+	this.boardSize = pt(this.size.x-this.boardOffset.x*2, this.size.y-this.boardOffset.y*2);
 	this.context= context;
 	this.render = function(game){
-		this.rectangle(pt(0,0), pt(this.width,this.height), colors.blue);
-		this.rectangle(pt(100,0), pt(this.width-200,this.height), colors.green);
+		this.rectangle(pt(0,0), this.size, colors.blue);
+		this.rectangle(this.boardOffset, this.boardSize, colors.green);
 		var hexSize = pt(90,76);
-		var max_cols = 6;
-		for(var i=0; i<max_cols; i++){
-			for(var j=0; j<11; j++){
-				var x = 115 +(hexSize.x+hexSize.x/2)*i;
-				var y = 1 + (hexSize.y/2)*j;
+
+		var hex_cols = Math.floor(this.boardSize.x/(3*hexSize.x/2));
+		var hex_rows = Math.floor((this.boardSize.y-hexSize.y/2)/(.5*hexSize.y));
+	 console.log(hex_cols + " cols, " + hex_rows + " rows");
+		var hexWidth = hex_cols * (3*hexSize.x/2) - hexSize.x/2;
+		var hexHeight = hex_rows * ((hexSize.y*.5)+1) + hexSize.y/2;
+		var hexOffset =
+									pt((this.boardSize.x-hexWidth)/2,
+													(this.boardSize.y-hexHeight)/2);
+
+		for(var i=0; i<hex_cols; i++){
+			for(var j=0; j<hex_rows; j++){
+				var x = hexOffset.x + (hexSize.x+hexSize.x/2)*i;
+				var y = hexOffset.y + (hexSize.y/2)*j;
 				if(j%2==1){
 					x += 3*hexSize.x/4;
-					if(i != max_cols-1)
+					if(i != hex_cols-1)
 						this.hex(pt(x,y), hexSize, colors.blue);
 				}
 				else {
@@ -49,7 +59,6 @@ function Drawing(context)
 				[x1,y2],
 				[x0,y1]
 			];
-		console.log(coords.join(' '));
 		c.strokeStyle = color;
 		c.beginPath();
 		c.moveTo(coords[0][0],coords[0][1]);
