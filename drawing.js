@@ -2,37 +2,45 @@ function Drawing(canvas, context)
 {
 	this.canvas = canvas;
 	this.context = context;
+
 	this.render = function(game){
 		this.canvas.width = this.canvas.width;
-		for(h in game.hexs)
-			this.hex(game.hexs[h], hexSize, colors.blue);
+		for(h in game.Hexs)
+			this.hex(game.Hexs[h], hexSize, colors.blue);
 	};
-	this.rectangle= function(pt1, pt2, color){
+	this.circle = function(loc, radius, color) {
+		this.context.beginPath();
+		this.context.fillStyle = color;
+		this.context.arc(loc.x, loc.y, radius, 0, Math.PI*2, false);
+		this.context.closePath();
+		this.context.fill();
+	};
+	this.rectangle = function(pt1, pt2, color){
 		this.context.beginPath();
 		this.context.fillStyle = color;
 		this.context.fillRect(pt1.x, pt1.y, pt2.x, pt2.y);
 		this.context.closePath();
 		this.context.fill();
 	};
-	this.hex = function(pt, size, color){
+	this.hex = function(hex, size, color){
 		var c = this.context;
-		var x0 = pt.x;
-		var x1 = pt.x + size.x/4;
-		var x2 = pt.x + 3*size.x/4;
-		var x3 = pt.x + size.x;
+		var x0 = hex.loc.x;
+		var x1 = hex.loc.x + size.x/4;
+		var x2 = hex.loc.x + 3*size.x/4;
+		var x3 = hex.loc.x + size.x;
 
-		var y0 = pt.y;
-		var y1 = pt.y + size.y/2;
-		var y2 = pt.y + size.y;
+		var y0 = hex.loc.y;
+		var y1 = hex.loc.y + size.y/2;
+		var y2 = hex.loc.y + size.y;
 		var coords = 
 			[
-			[x1,y0],
-			[x2,y0],
-			[x3,y1],
-			[x2,y2],
-			[x1,y2],
-			[x0,y1]
-				];
+				[x1,y0],
+				[x2,y0],
+				[x3,y1],
+				[x2,y2],
+				[x1,y2],
+				[x0,y1]
+			];
 		c.strokeStyle = color;
 		c.beginPath();
 		c.moveTo(coords[0][0],coords[0][1]);
@@ -40,7 +48,44 @@ function Drawing(canvas, context)
 			c.lineTo(coords[i][0],coords[i][1]);
 		c.closePath();
 		c.stroke();
+
+		//this.centerText(hex.center, 'X', colors.red);
+		this.circle(hex.center, hex.size.y*.6/2, colors.red);
+		
+	};
+	this.centerText = function(loc, text, color, font)
+	{
+		var oldAlign = this.context.textAlign;
+		this.context.textAlign = 'center';
+		this.context.font = typeof font == 'undefined' ? 'italic bold 15px sans-serif' : font;
+
+		this.context.fillStyle = color;
+		this.context.font = typeof font == 'undefined' ? 'italic bold 15px sans-serif' : font;
+		this.context.textBaseline = 'middle';
+		this.context.fillText(text, loc.x, loc.y);
+		this.context.textAlign = oldAlign;
 	}
+	this.drawText = function(loc, text, color, font)
+	{
+		context.fillStyle = color;
+		context.font = typeof font == 'undefined' ? 'italic bold 15px sans-serif' : font;
+		context.textBaseline = 'bottom';
+		context.fillText(text, loc.x, loc.y);
+	};
+	this.strokeText = function(loc, text, color, font)
+	{
+		context.strokeStyle = color;
+		context.font = typeof font == 'undefined' ? 'bold 15px sans-serif' : font;
+		context.lineWidth = 9;
+		context.textBaseline = 'bottom';
+
+		context.fillStyle = colors.white;
+		context.lineWidth = 3;
+		context.fillText(text, loc.x, loc.y);
+
+		context.strokeText(text, loc.x, loc.y);
+
+	};
 
 };
 

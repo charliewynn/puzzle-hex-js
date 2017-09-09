@@ -1,16 +1,26 @@
+function Hex(loc, ndx, size) {
+	this.loc = loc;
+	this.size = size;
+	this.center = pt(loc.x+size.x/2, loc.y+size.y/2);
+	this.ndx = ndx;
+}
+
 function pt(){
-	var x,y;
-	if(arguments.length == 2){
+	var x,y,z;
+	if(arguments.length >= 2){
 		x = arguments[0];
 		y = arguments[1];
+		z = arguments[2];
 	}
 	if(arguments.length == 1) {
 		x = arguments[0][0];
 		y = arguments[0][1];
+		z = arguments[0][2];
 	}
 	return {
 		x:x,
-		y:y
+		y:y,
+		z:z
 	};
 }
 
@@ -62,9 +72,9 @@ function generateHex(size, numHex){
 			var y = boardOffset.y + (hexSize.y/2)*j;
 
 			if(j%2==0)
-				hexs.push(pt(x,y));
+				hexs.push(new Hex(pt(x,y), pt(i,j,0), hexSize));
 			else if(i < hex_cols - 1)
-				hexs.push(pt(x+hexSize.x*3/4,y));
+				hexs.push(new Hex(pt(x+hexSize.x*3/4,y), pt(i,j,1), hexSize));
 		}
 	}
 	return hexs;
