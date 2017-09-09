@@ -50,12 +50,32 @@ function Game(numHex, canvas){
 	}
 	this.TouchHandler = function(e) {
 
+		var touches = event.changedTouches,
+			first = touches[0],
+			type = "";
+
+		switch(event.type)
+		{
+			case "touchstart": type = "mousedown"; break;
+			case "touchmove":  type="mousemove"; break;        
+			case "touchend":   type="mouseup"; break;
+			default: return;
+		}
+
+		var simulatedEvent = document.createEvent("MouseEvent");
+		simulatedEvent.initMouseEvent(type, true, true, window, 1, 
+			first.screenX, first.screenY, 
+			first.clientX, first.clientY, false, 
+			false, false, false, 0/*left*/, null);
+
+		first.target.dispatchEvent(simulatedEvent);
+		event.preventDefault();
 	}
 	canvas.addEventListener('mousedown', makeListener(this, this.MouseDown), false);
 	canvas.addEventListener('mousemove', this.MouseMove, false);
 	canvas.addEventListener('mouseup',   this.MouseUp, false);
 
-	document.addEventListener("touchstart", this.TouchHandler, true);
+	document.addEventListener("touchstart", makeListener(this, this.TouchHandler), true);
 	document.addEventListener("touchmove", this.TouchHandler, true);
 	document.addEventListener("touchend", this.TouchHandler, true);
 	document.addEventListener("touchcancel", this.TouchHandler, true);
@@ -100,9 +120,9 @@ function touchHandler(event)
 
 	var simulatedEvent = document.createEvent("MouseEvent");
 	simulatedEvent.initMouseEvent(type, true, true, window, 1, 
-			first.screenX, first.screenY, 
-			first.clientX, first.clientY, false, 
-			false, false, false, 0/*left*/, null);
+		first.screenX, first.screenY, 
+		first.clientX, first.clientY, false, 
+		false, false, false, 0/*left*/, null);
 
 	first.target.dispatchEvent(simulatedEvent);
 	event.preventDefault();
