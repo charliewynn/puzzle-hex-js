@@ -4,7 +4,12 @@ function Hex(loc, ndx, size) {
 	this.center = new pt(loc.x+size.x/2, loc.y+size.y/2);
 	this.ndx = ndx;
 	var Colors = Object.getOwnPropertyNames(new colors());
-	this.color = Colors[Math.floor(Math.random()*Colors.length)];
+	this.color = new colors()[Colors[Math.floor(Math.random()*Colors.length)]];
+}
+pt.prototype.join = function(s){
+	if(this.z == 'undefined')
+		return [this.x, this.y].join(s);
+	return [this.x, this.y, this.z].join(s);
 }
 
 function pt(){
@@ -77,9 +82,9 @@ function generateHex(size, numHex){
 			var y = boardOffset.y + (hexSize.y/2)*j;
 
 			if(j%2==0)
-				hexs.push(new Hex(new pt(x,y), new pt(i,j,0), hexSize));
+				hexs.push(new Hex(new pt(x,y), new pt(i,j), hexSize));
 			else if(i < hex_cols - 1)
-				hexs.push(new Hex(new pt(x+hexSize.x*3/4,y), new pt(i,j,1), hexSize));
+				hexs.push(new Hex(new pt(x+hexSize.x*3/4,y), new pt(i,j), hexSize));
 		}
 	}
 	return hexs;
