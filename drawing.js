@@ -2,11 +2,25 @@ function Drawing(size, context)
 {
 				var hex_rows = 13;
 				var hex_cols = 4;
-		  var hexSize = pt(90,76);
+				var hexRatio = 76/90;
+		  //var hexSize = pt(90,76);
+				var proposedHexWidth = Math.floor(size.x/(hex_cols*2+1.5));
+				var proposedHexHeight = Math.floor(size.y/(hex_rows/1.5+2));
+
+				//using proposed width puts us over height
+				if(proposedHexWidth * hexRatio < proposedHexHeight){
+								hexSize = pt(proposedHexHeight*(1/hexRatio), proposedHexHeight);
+				}
+				else
+				{
+								hexSize = pt(proposedHexWidth, proposedHexWidth * hexRatio);
+				}
+				//var hexSize = pt(Math.floor(size.x/hex_rows),
+								//Math.floor(size.y/hex_cols));
+				console.log(hexSize);
 
 		var hexWidth = hex_cols * (3*hexSize.x/2) - hexSize.x/2;
 		var hexHeight = hex_rows * ((hexSize.y*.5)+1) + hexSize.y/2;
-
 				console.log("size: " + hexWidth + " " + hexHeight);
 		this.boardOffset = pt((size.x-hexWidth)/2,(size.y-hexHeight)/2);
 	console.log(this.boardOffset);
@@ -16,8 +30,7 @@ function Drawing(size, context)
 				console.log("boardSize", this.boardSize);
 	this.context = context;
 	this.render = function(game){
-		this.rectangle(pt(0,0), this.size, colors.blue);
-		this.rectangle(this.boardOffset, this.boardSize, colors.green);
+		this.rectangle(pt(0,0), this.size, colors.green);
 
 	 console.log(hex_cols + " cols, " + hex_rows + " rows");
 		var hexOffset =
