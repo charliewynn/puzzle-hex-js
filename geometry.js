@@ -1,7 +1,7 @@
 function Hex(loc, ndx, size) {
 	this.loc = loc;
 	this.size = size;
-	this.center = pt(loc.x+size.x/2, loc.y+size.y/2);
+	this.center = new pt(loc.x+size.x/2, loc.y+size.y/2);
 	this.ndx = ndx;
 	var Colors = Object.getOwnPropertyNames(new colors());
 	this.color = Colors[Math.floor(Math.random()*Colors.length)];
@@ -19,11 +19,14 @@ function pt(){
 		y = arguments[0][1];
 		z = arguments[0][2];
 	}
-	return {
-		x:x,
-		y:y,
-		z:z
-	};
+	this.x = x;
+	this.y = y;
+	this.z = z;
+}
+
+pt.prototype.dist = function(v2)
+{
+	return Math.sqrt(Math.pow(v2.x - this.x,2) + Math.pow(v2.y - this.y,2));
 }
 
 function generateHex(size, numHex){
@@ -54,17 +57,17 @@ function generateHex(size, numHex){
 	//using proposed width puts us over height
 	if(proposedHexWidth * hexRatio > proposedHexHeight){
 		console.log('limit width');
-		hexSize = pt(proposedHexHeight*(1/hexRatio), proposedHexHeight);
+		hexSize = new pt(proposedHexHeight*(1/hexRatio), proposedHexHeight);
 	}
 	else
 	{
 		console.log('limit height');
-		hexSize = pt(proposedHexWidth, proposedHexWidth * hexRatio);
+		hexSize = new pt(proposedHexWidth, proposedHexWidth * hexRatio);
 	}
 	console.log("Hex Size: ", hexSize);
-	var boardSize = pt(hexSize.x*(hex_cols*3-1)/2, hexSize.y*Math.ceil(hex_rows/2));
+	var boardSize = new pt(hexSize.x*(hex_cols*3-1)/2, hexSize.y*Math.ceil(hex_rows/2));
 	console.log("boardSize", boardSize);
-	var boardOffset = pt((size.x-boardSize.x)/2,(size.y-boardSize.y)/2);
+	var boardOffset = new pt((size.x-boardSize.x)/2,(size.y-boardSize.y)/2);
 	console.log(boardOffset);
 
 	var hexs = [];
@@ -74,9 +77,9 @@ function generateHex(size, numHex){
 			var y = boardOffset.y + (hexSize.y/2)*j;
 
 			if(j%2==0)
-				hexs.push(new Hex(pt(x,y), pt(i,j,0), hexSize));
+				hexs.push(new Hex(new pt(x,y), new pt(i,j,0), hexSize));
 			else if(i < hex_cols - 1)
-				hexs.push(new Hex(pt(x+hexSize.x*3/4,y), pt(i,j,1), hexSize));
+				hexs.push(new Hex(new pt(x+hexSize.x*3/4,y), new pt(i,j,1), hexSize));
 		}
 	}
 	return hexs;
