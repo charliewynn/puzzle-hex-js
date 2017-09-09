@@ -18,6 +18,9 @@ function Drawing(size, context)
 									pt((this.boardSize.x-hexWidth)/2,
 													(this.boardSize.y-hexHeight)/2);
 
+		this.rectangle(this.boardOffset,pt(hexOffset.x/2, this.boardSize.y), colors.blue);
+		this.rectangle(pt(this.boardSize.x-hexOffset.x/2, this.boardOffset.y),this.boardSize, colors.blue);
+
 		for(var i=0; i<hex_cols; i++){
 			for(var j=0; j<hex_rows; j++){
 				var x = hexOffset.x + (hexSize.x+hexSize.x/2)*i;
@@ -28,7 +31,7 @@ function Drawing(size, context)
 						this.hex(pt(x,y), hexSize, colors.blue);
 				}
 				else {
-					this.hex(pt(x,y), hexSize, colors.red);
+					this.hex(pt(x,y), hexSize, colors.blue);
 				}
 			}
 		}
