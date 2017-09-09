@@ -2,11 +2,11 @@ function Drawing(canvas, context)
 {
 	this.canvas = canvas;
 	this.context = context;
-
+	this.colors = new colors();
 	this.render = function(game){
 		this.canvas.width = this.canvas.width;
 		for(h in game.Hexs)
-			this.hex(game.Hexs[h], hexSize, colors.blue);
+			this.hex(game.Hexs[h], hexSize, this.colors.blue);
 	};
 	this.circle = function(loc, radius, color) {
 		this.context.beginPath();
@@ -49,8 +49,9 @@ function Drawing(canvas, context)
 		c.closePath();
 		c.stroke();
 
-		//this.centerText(hex.center, 'X', colors.red);
-		this.circle(hex.center, hex.size.y*.6/2, colors.red);
+		//this.centerText(hex.center, 'X', this.colors.red);
+		this.circle(hex.center, hex.size.y*.6/2+1, (new colors()).black);
+		this.circle(hex.center, hex.size.y*.6/2, hex.color);
 		
 	};
 	this.centerText = function(loc, text, color, font)
@@ -79,20 +80,20 @@ function Drawing(canvas, context)
 		context.lineWidth = 9;
 		context.textBaseline = 'bottom';
 
-		context.fillStyle = colors.white;
+		context.fillStyle = this.colors.white;
 		context.lineWidth = 3;
 		context.fillText(text, loc.x, loc.y);
 
 		context.strokeText(text, loc.x, loc.y);
 
 	};
-
 };
-
-var colors = {
-	red : "rgba(255,0,0,1)",
-	green: "rgba(34,139,34,1)",
-	blue: "rgba(0,0,255,1)",
-	black: "rgba(1,1,1,1)",
-	white: "rgba(0,0,0,1)"
+function colors() {
+	this.red = "rgba(255,0,0,1)";
+	this.green = "rgba(34,139,34,1)";
+	this.blue = "rgba(0,0,255,1)";
+	this.black = "rgba(0,0,0,1)";
+	this.white = "rgba(255,255,255,1)";
+	this.yellow = "rgba(200,200,0,1";
 }
+

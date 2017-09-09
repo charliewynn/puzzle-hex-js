@@ -24,3 +24,4 @@ function Game(numHex, canvas){
 
 	this.Draw.render(this);
 }
+

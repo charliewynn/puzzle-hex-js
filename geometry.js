@@ -3,6 +3,8 @@ function Hex(loc, ndx, size) {
 	this.size = size;
 	this.center = pt(loc.x+size.x/2, loc.y+size.y/2);
 	this.ndx = ndx;
+	var Colors = Object.getOwnPropertyNames(new colors());
+	this.color = Colors[Math.floor(Math.random()*Colors.length)];
 }
 
 function pt(){
