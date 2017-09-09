@@ -39,7 +39,9 @@ function Game(numHex, canvas){
 				closestHex = this.Hexs[hex];
 			}
 		}
-		closestHex.color = colors.green;
+		closestHex.color = this.Draw.colors.green;
+		console.log(closestHex);
+		this.Draw.render(this);
 	}
 	this.MouseMove = function(e) {
 	}
@@ -49,7 +51,7 @@ function Game(numHex, canvas){
 	this.TouchHandler = function(e) {
 
 	}
-	canvas.addEventListener('mousedown', this.MouseDown, false);
+	canvas.addEventListener('mousedown', makeListener(this, this.MouseDown), false);
 	canvas.addEventListener('mousemove', this.MouseMove, false);
 	canvas.addEventListener('mouseup',   this.MouseUp, false);
 
@@ -57,6 +59,12 @@ function Game(numHex, canvas){
 	document.addEventListener("touchmove", this.TouchHandler, true);
 	document.addEventListener("touchend", this.TouchHandler, true);
 	document.addEventListener("touchcancel", this.TouchHandler, true);
+}
+
+function makeListener(self, listener) {
+	return function(e) {
+		return listener.call(self, e);
+	}
 }
 
 function getCursorPosition(e) {
