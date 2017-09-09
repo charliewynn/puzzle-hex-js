@@ -1,57 +1,11 @@
-function Drawing(size, context)
+function Drawing(canvas, context)
 {
-				var hex_rows = 13;
-				var hex_cols = 4;
-				var hexRatio = 76/90;
-		  //var hexSize = pt(90,76);
-				var proposedHexWidth = Math.floor(size.x/(hex_cols*2+1.5));
-				var proposedHexHeight = Math.floor(size.y/(hex_rows/1.5+2));
-
-				//using proposed width puts us over height
-				if(proposedHexWidth * hexRatio < proposedHexHeight){
-								hexSize = pt(proposedHexHeight*(1/hexRatio), proposedHexHeight);
-				}
-				else
-				{
-								hexSize = pt(proposedHexWidth, proposedHexWidth * hexRatio);
-				}
-				//var hexSize = pt(Math.floor(size.x/hex_rows),
-								//Math.floor(size.y/hex_cols));
-				console.log(hexSize);
-
-		var hexWidth = hex_cols * (3*hexSize.x/2) - hexSize.x/2;
-		var hexHeight = hex_rows * ((hexSize.y*.5)+1) + hexSize.y/2;
-				console.log("size: " + hexWidth + " " + hexHeight);
-		this.boardOffset = pt((size.x-hexWidth)/2,(size.y-hexHeight)/2);
-	console.log(this.boardOffset);
-
-	this.size = size;
-	this.boardSize = pt(hexWidth, hexHeight);// pt(this.size.x-this.boardOffset.x*2, this.size.y-this.boardOffset.y*2);
-				console.log("boardSize", this.boardSize);
+	this.canvas = canvas;
 	this.context = context;
 	this.render = function(game){
-		this.rectangle(pt(0,0), this.size, colors.green);
-
-	 console.log(hex_cols + " cols, " + hex_rows + " rows");
-		var hexOffset =
-									this.boardOffset;
-									//pt((this.boardSize.x-hexWidth)/2,
-													//(this.boardSize.y-hexHeight)/2);
-
-		for(var i=0; i<hex_cols; i++){
-			for(var j=0; j<hex_rows; j++){
-				var x = hexOffset.x + (hexSize.x+hexSize.x/2)*i;
-				var y = 7+hexOffset.y + (hexSize.y/2)*j;
-				if(j%2==1){
-					x += 3*hexSize.x/4;
-					if(i != hex_cols-1)
-						this.hex(pt(x,y), hexSize, colors.blue);
-				}
-				else {
-					this.hex(pt(x,y), hexSize, colors.blue);
-				}
-			}
-		}
+		this.canvas.width = this.canvas.width;
+		for(h in game.hexs)
+			this.hex(game.hexs[h], hexSize, colors.blue);
 	};
 	this.rectangle= function(pt1, pt2, color){
 		this.context.beginPath();
@@ -72,13 +26,13 @@ function Drawing(size, context)
 		var y2 = pt.y + size.y;
 		var coords = 
 			[
-				[x1,y0],
-				[x2,y0],
-				[x3,y1],
-				[x2,y2],
-				[x1,y2],
-				[x0,y1]
-			];
+			[x1,y0],
+			[x2,y0],
+			[x3,y1],
+			[x2,y2],
+			[x1,y2],
+			[x0,y1]
+				];
 		c.strokeStyle = color;
 		c.beginPath();
 		c.moveTo(coords[0][0],coords[0][1]);
