@@ -49,7 +49,7 @@ function Game(numHex, canvas){
 
 	}
 	this.TouchHandler = function(e) {
-
+		alert(1);
 		var touches = event.changedTouches,
 			first = touches[0],
 			type = "";
