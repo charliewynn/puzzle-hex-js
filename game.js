@@ -45,8 +45,10 @@ function Game(numHex, canvas){
 		}
 
 		if(!closestHex || closestHex.selected) {
-			this.selectedHex.selected = false;
-			this.selectedHex = undefined;
+			if(this.selectedHex){
+				this.selectedHex.selected = false;
+				this.selectedHex = undefined;
+			}
 			return;
 		}
 
