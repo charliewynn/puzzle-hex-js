@@ -3,16 +3,7 @@ function Hex(loc, ndx, size) {
 	this.size = size;
 	this.center = new pt(loc.x+size.x/2, loc.y+size.y/2);
 	this.ndx = ndx;
-	var Colors = Object.getOwnPropertyNames(new colors());
-	this.color = new colors()[Colors[Math.floor(Math.random()*Colors.length)]];
-	this.up;
-	this.down;
-
-	this.ur;
-	this.dr;
-
-	this.ul;
-	this.dl;
+	this.neighbors = {};
 }
 pt.prototype.join = function(s){
 	if(this.z == 'undefined')
@@ -122,8 +113,61 @@ function generateHex(size, numHex){
 		for(var n in neighbors) {
 			n = neighbors[n];
 			if(hexPlots[n[1]] && hexPlots[n[1]][n[2]])
-				hexs[hex][n[0]] = hexPlots[n[1]][n[2]];
+				hexs[hex].neighbors[n[0]] = hexPlots[n[1]][n[2]];
 		}
+	}
+	for(var hex in hexs){
+		var hex = hexs[hex];
+		var neighborColors = {};
+		var colorArr = Object.getOwnPropertyNames(hexColors);
+		for(var c in colorArr) {
+			neighborColors[hexColors[colorArr[c]]] = 0;
+		}
+		for(var n in hex.neighbors) {
+			neighborColors[hex.neighbors[n].color]++;
+		}
+		var randomColor = undefined;
+		var doubleULColor = undefined;
+		var doubleDLColor = undefined;
+		var doubleUPColor = undefined;
+
+		if(hex.neighbors.up) {
+			if(hex.neighbors.up.neighbors.up) {
+							if(hex.neighbors.up.color == hex.neighbors.up.neighbors.up.color) {
+												doubleUPColor = hex.neighbors.up.color;
+							}
+			}
+		}
+		if(hex.neighbors.dl) {
+			if(hex.neighbors.dl.neighbors.dl) {
+							if(hex.neighbors.dl.color == hex.neighbors.dl.neighbors.dl.color) {
+												doubleDLColor = hex.neighbors.dl.color;
+							}
+			}
+		}
+		if(hex.neighbors.ul) {
+			if(hex.neighbors.ul.neighbors.ul) {
+							if(hex.neighbors.ul.color == hex.neighbors.ul.neighbors.ul.color) {
+												doubleULColor = hex.neighbors.ul.color;
+							}
+			}
+		}
+		while(randomColor == undefined ||
+				neighborColors[randomColor] >=2 ||
+				doubleULColor == randomColor ||
+				doubleUPColor == randomColor ||
+				doubleDLColor == randomColor) {
+					randomColor = hexColors[colorArr[Math.floor(Math.random()*colorArr.length)]];
+				}
+		hex.color = randomColor;
 	}
 	return hexs;
 }
+var hexColors = {
+	red : "rgba(255,0,0,1)",
+	green : "rgba(34,139,34,1)",
+	blue : "rgba(0,0,255,1)",
+	black : "rgba(0,0,0,1)",
+	white : "rgba(255,255,255,1)",
+	yellow : "rgba(200,200,0,1)"
+};

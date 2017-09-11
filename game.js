@@ -101,16 +101,8 @@ function Game(numHex, canvas){
 		first.target.dispatchEvent(simulatedEvent);
 	}
 	canvas.addEventListener('mousedown', makeListener(this, this.MouseDown), false);
-	//canvas.addEventListener('mousemove', this.MouseMove, false);
-	//canvas.addEventListener('mouseup',   this.MouseUp, false);
 
 	document.addEventListener("touchstart", makeListener(this, this.TouchHandler), true);
-	//document.addEventListener("touchmove", makeListener(this, this.TouchHandler), true);
-	//document.addEventListener("touchend", makeListener(this, this.TouchHandler), true);
-	//document.addEventListener("touchcancel", makeListener(this, this.TouchHandler), true);
-	//document.addEventListener("touchmove", this.TouchHandler, true);
-	//document.addEventListener("touchend", this.TouchHandler, true);
-	//document.addEventListener("touchcancel", this.TouchHandler, true);
 }
 
 function makeListener(self, listener) {
@@ -131,8 +123,6 @@ function getCursorPosition(e) {
 		y = e.clientY + document.body.scrollTop + document.documentElement.scrollTop;
 	}
 
-	//x -= document.getElementById("theCanvas").offsetLeft;
-	//y -= document.getElementById("theCanvas").offsetTop;
 	return [x,y];
 }
 
