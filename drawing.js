@@ -58,15 +58,12 @@ function Drawing(canvas, context)
 			c.fillStyle = this.colors.white;
 			c.fill();
 		}
-		//c.fill();
 
-		//this.centerText(hex.center, 'X', this.colors.red);
 		this.circle(hex.center, hex.size.y*.6/2+1, this.colors.black);
 		this.circle(hex.center, hex.size.y*.6/2, color || hex.color);
 		var textColor = this.colors.white;
-		if(~[this.colors.white, this.colors.yellow].indexOf(hex.color)) textColor = this.colors.black;
-
-		//this.centerText(hex.center, hex.ndx.join(' '), textColor);
+		if(~[this.colors.white, this.colors.yellow].indexOf(hex.color))
+									textColor = this.colors.black;
 
 	};
 	this.centerText = function(loc, text, color, font)
@@ -111,4 +108,3 @@ function colors() {
 	this.white = "rgba(255,255,255,1)";
 	this.yellow = "rgba(200,200,0,1)";
 }
-

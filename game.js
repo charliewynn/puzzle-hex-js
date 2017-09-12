@@ -14,27 +14,25 @@ function didLoad(){
 		h=(params.map(function(p){ return p.split('='); }).filter(function(p){ return p[0] == 'h'; })[0] || ['',h])[1];
 	}
 
-	new Game(new pt(w,h), canvas);
+	new Game(w, h, canvas);
 }
 
-function Game(numHex, canvas){
+function Game(width, height, canvas){
 	var game = this;
-	var size = new pt(window.innerWidth, window.innerHeight);
-	this.Hexs = generateHex(size, numHex);
+	this.Geometry = new Geometry();
+	var size = new Point(window.innerWidth, window.innerHeight);
+	this.Hexs = this.Geometry.GenerateHex(size, new Point(width, height));
 	this.Draw = new Drawing(canvas, canvas.getContext('2d'));
 
 	this.Draw.render(this);
 
-	var t = this;
-	setInterval(function(){ t.Draw.render(t); }, 50);
+	var _this = this;
+	setInterval(function(){ _this.Draw.render(_this); }, 50);
 
 	this.MouseDown = function(e) {
-		//console.log(event.type);
-		var clickPoint = new pt(getCursorPosition(e));
-		//touchPt = new Vector(clickPoint[0], clickPoint[1]);
+		var clickPoint = new Point(getCursorPosition(e));
 		var closestHex;
 		var closestDist = 1000;
-
 
 		for(var hex in this.Hexs) {
 			var dist = this.Hexs[hex].center.dist(clickPoint);
@@ -52,14 +50,19 @@ function Game(numHex, canvas){
 			return;
 		}
 
-
 		if(this.selectedHex) {
-
 			if(closestHex.center.dist(this.selectedHex.center) < (closestHex.size.y * 1.5)) {
 
 				var swpColor = closestHex.color;
 				closestHex.color = this.selectedHex.color;
 				this.selectedHex.color = swpColor;
+				//swapped
+				//check if valid
+				closestHex.CheckMatch();
+				this.selectedHex.CheckMatch();
+				
+				//otherwise undo
+
 				this.selectedHex.selected = false;
 				this.selectedHex = undefined;
 				return;
@@ -87,29 +90,29 @@ function Game(numHex, canvas){
 		switch(event.type)
 		{
 			case "touchstart": type = "mousedown"; break;
-			case "touchmove":  type="mousemove"; break;        
+			case "touchmove":  type="mousemove"; break;
 			case "touchend":   type="mouseup"; break;
 			default: return;
 		}
 
 		var simulatedEvent = document.createEvent("MouseEvent");
 		simulatedEvent.initMouseEvent(type, true, true, window, 1, 
-				first.screenX, first.screenY, 
-				first.clientX, first.clientY, false, 
-				false, false, false, 0/*left*/, null);
+			first.screenX, first.screenY, 
+			first.clientX, first.clientY, false, 
+			false, false, false, 0, null);
 
 		first.target.dispatchEvent(simulatedEvent);
 	}
 	canvas.addEventListener('mousedown', makeListener(this, this.MouseDown), false);
 
 	document.addEventListener("touchstart", makeListener(this, this.TouchHandler), true);
-}
-
-function makeListener(self, listener) {
-	return function(e) {
-		return listener.call(self, e);
+	function makeListener(self, listener) {
+		return function(e) {
+			return listener.call(self, e);
+		}
 	}
 }
+
 
 function getCursorPosition(e) {
 	var x, y;
@@ -142,9 +145,9 @@ function touchHandler(event)
 
 	var simulatedEvent = document.createEvent("MouseEvent");
 	simulatedEvent.initMouseEvent(type, true, true, window, 1, 
-			first.screenX, first.screenY, 
-			first.clientX, first.clientY, false, 
-			false, false, false, 0/*left*/, null);
+		first.screenX, first.screenY, 
+		first.clientX, first.clientY, false, 
+		false, false, false, 0/*left*/, null);
 
 	first.target.dispatchEvent(simulatedEvent);
 	event.preventDefault();
