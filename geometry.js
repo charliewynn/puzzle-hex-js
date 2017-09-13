@@ -7,9 +7,17 @@ function Geometry()
 	this.ndx = ndx;
 	this.neighbors = {};
 
+  this.markNeighbors = function() {
+	 this.marked = true;
+	for(var n in this.neighbors) {
+	 if(this.neighbors[n].color === this.color)
+		if(!this.neighbors[n].marked) this.neighbors[n].markNeighbors();
+	}
+ }
 	//returns an array of hexes this is part of a match of
 	this.CheckMatch = function(matchStyle) {
 		var matches = [];
+	  var matchFound = false;
 		var color = this.color;
 		var NeighborPairs =
 			[
@@ -29,10 +37,17 @@ function Geometry()
 					this.neighbors[np[0]].color == color) {
 				//start of group found!
 				console.log('Group Found');
+				matchFound = true;
+				break;
 			 }
 
 			}
 		}
+
+	 if(matchFound) {
+		this.markNeighbors();
+
+	 }
 	}
  }
 

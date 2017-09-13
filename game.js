@@ -30,6 +30,7 @@ function Game(width, height, canvas){
 	setInterval(function(){ _this.Draw.render(_this); }, 50);
 
 	this.MouseDown = function(e) {
+			if(this.Draw.ClearCountDown) return;
 		var clickPoint = new Point(getCursorPosition(e));
 		var closestHex;
 		var closestDist = 1000;
@@ -60,7 +61,22 @@ function Game(width, height, canvas){
 				//check if valid
 				closestHex.CheckMatch();
 				this.selectedHex.CheckMatch();
-				
+
+				this.Draw.toBeCleared =[];
+				this.Draw.ClearCountDown = 7;
+				for(var h in this.Hexs) {
+					var hex = this.Hexs[h];
+					if(hex.marked) {
+						this.Draw.toBeCleared.push(hex);
+						var upN = hex.neighbors.up;
+						if(upN && !upN.marked) hex.next = upN;
+						//hex.color = 'purple';
+					}
+				}
+				for(var h in this.Draw.toBeCleared) {
+					delete this.Draw.toBeCleared[h].marked;
+				}
+				delete hex.marked
 				//otherwise undo
 
 				this.selectedHex.selected = false;
