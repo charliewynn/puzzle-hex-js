@@ -4,6 +4,7 @@ function Drawing(canvas, context)
 				this.context = context;
 				this.colors = new colors();
 				this.ClearCountDown = 0;
+				this.toBeCleared = [];
 				this.render = function(game){
 								if(this.ClearCountDown > 0) this.ClearCountDown--;
 								this.canvas.width = this.canvas.width;
@@ -12,7 +13,8 @@ function Drawing(canvas, context)
 
 								for(var h in this.toBeCleared) {
 												var hex = this.toBeCleared[h];
-												this.circle(hex.center, hex.size.y*.6/2+2, this.colors.green);
+												if(!hex.swap)
+																this.circle(hex.center, hex.size.y*.6/2+2, this.colors.green);
 												//this.circle(hex.center, 6, 'black');
 												//if(hex.next) this.circle(hex.center, 4, hex.next.color);
 												//else this.circle(hex.center, 4, 'orange');
@@ -21,8 +23,14 @@ function Drawing(canvas, context)
 												var nextToBeCleared = [];
 												for(var h in this.toBeCleared) {
 																var hex = this.toBeCleared[h];
-																if(hex.next) {
-																		hex.color = hex.next.color;
+																if(hex.swap){
+																				var swpColor = hex.color;
+																				hex.color = hex.swap.color;
+																				hex.swap.color = swpColor;
+																				delete hex.swap;
+																}
+																else if(hex.next) {
+																				hex.color = hex.next.color;
 																				nextToBeCleared.push(hex.next);
 																				delete hex.next;
 																}
@@ -32,12 +40,12 @@ function Drawing(canvas, context)
 																				nextToBeCleared.push(hex);
 																}
 																else {
-																			if(!hex.neighbors.down.next) hex.color = 'grey';
+																				if(!hex.neighbors.down.next) hex.color = 'grey';
 																}
 												}
 												this.toBeCleared = nextToBeCleared;
 												if(this.toBeCleared.length)
-																this.ClearCountDown = 5;
+																this.ClearCountDown = 2;
 								}
 				};
 				this.circle = function(loc, radius, color) {

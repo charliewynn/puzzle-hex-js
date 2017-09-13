@@ -46,7 +46,7 @@ function Geometry()
 
 	 if(matchFound) {
 		this.markNeighbors();
-
+		return true;
 	 }
 	}
  }
