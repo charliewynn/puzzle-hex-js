@@ -7,42 +7,43 @@ function Geometry()
 	this.ndx = ndx;
 	this.neighbors = {};
 
-  this.markNeighbors = function() {
+	this.markNeighbors = function() {
 	 this.marked = true;
-	for(var n in this.neighbors) {
-	 if(this.neighbors[n].color === this.color)
-		if(!this.neighbors[n].marked) this.neighbors[n].markNeighbors();
+	 this.highlight = 8;
+	 for(var n in this.neighbors) {
+		if(this.neighbors[n].color === this.color)
+		 if(!this.neighbors[n].marked) this.neighbors[n].markNeighbors();
+	 }
 	}
- }
 	//returns an array of hexes this is part of a match of
 	this.CheckMatch = function(matchStyle) {
-		var matches = [];
-	  var matchFound = false;
-		var color = this.color;
-		var NeighborPairs =
-			[
-			 ['up', 'ur'],
-			 ['ur', 'dr'],
-			 ['dr', 'down'],
-			 ['down', 'dl'],
-			 ['dl', 'ul'],
-			 ['ul', 'up']
-			];
-		for(var neighborPair in NeighborPairs) {
-			var np = NeighborPairs[neighborPair];
+	 var matches = [];
+	 var matchFound = false;
+	 var color = this.color;
+	 var NeighborPairs =
+		[
+		 ['up', 'ur'],
+		 ['ur', 'dr'],
+		 ['dr', 'down'],
+		 ['down', 'dl'],
+		 ['dl', 'ul'],
+		 ['ul', 'up']
+		];
+	 for(var neighborPair in NeighborPairs) {
+		var np = NeighborPairs[neighborPair];
 
-		 	//is this neighbor pair worth checking?
-			if(this.neighbors[np[0]] && this.neighbors[np[1]]) {
-			 if(this.neighbors[np[0]].color == this.neighbors[np[1]].color &&
-					this.neighbors[np[0]].color == color) {
-				//start of group found!
-				console.log('Group Found');
-				matchFound = true;
-				break;
-			 }
+		//is this neighbor pair worth checking?
+		if(this.neighbors[np[0]] && this.neighbors[np[1]]) {
+		 if(this.neighbors[np[0]].color == this.neighbors[np[1]].color &&
+			this.neighbors[np[0]].color == color) {
+			//start of group found!
+			console.log('Group Found');
+			matchFound = true;
+			break;
+		 }
 
-			}
 		}
+	 }
 
 	 if(matchFound) {
 		this.markNeighbors();
@@ -136,7 +137,6 @@ function Geometry()
 	for(var hex in hexs){
 	 var hex = hexs[hex];
 	 var neighborColors = {};
-	 var colorArr = Object.getOwnPropertyNames(hexColors);
 	 for(var c in colorArr) {
 		neighborColors[hexColors[colorArr[c]]] = 0;
 	 }
@@ -174,7 +174,7 @@ function Geometry()
 		doubleULColor == randomColor ||
 		doubleUPColor == randomColor ||
 		doubleDLColor == randomColor) {
-		randomColor = hexColors[colorArr[Math.floor(Math.random()*colorArr.length)]];
+		randomColor = randomHexColor();
 	 }
 	 hex.color = randomColor;
 	}
@@ -183,15 +183,19 @@ function Geometry()
  function log() {
 	//console.log.apply(null,arguments);
  }
- var hexColors = {
-	red : "rgba(255,0,0,1)",
-	green : "rgba(34,139,34,1)",
-	blue : "rgba(0,0,255,1)",
-	black : "rgba(0,0,0,1)",
-	white : "rgba(255,255,255,1)",
-	yellow : "rgba(200,200,0,1)"
- };
 }
+var randomHexColor = function(){
+ return hexColors[colorArr[Math.floor(Math.random()*colorArr.length)]];
+}
+var hexColors = {
+ red : "rgba(255,0,0,1)",
+ orange : "rgba(255,145,0,1)",
+ blue : "rgba(0,0,255,1)",
+ black : "rgba(0,0,0,1)",
+ white : "rgba(255,255,255,1)",
+ yellow : "rgba(200,200,0,1)"
+};
+var colorArr = Object.getOwnPropertyNames(hexColors);
 
 function Point() {
  var x,y,z;

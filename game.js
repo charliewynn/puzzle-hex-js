@@ -27,7 +27,7 @@ function Game(width, height, canvas){
 		this.Draw.render(this);
 
 		var _this = this;
-		setInterval(function(){ _this.Draw.render(_this); }, 50);
+		setInterval(function(){ _this.Draw.render(_this); }, 20);
 
 		this.MouseDown = function(e) {
 				if(this.Draw.ClearCountDown) return;
@@ -60,13 +60,9 @@ function Game(width, height, canvas){
 								//swapped
 								//check if valid
 								if(!closestHex.CheckMatch() && !this.selectedHex.CheckMatch()) {
-										//var swpColor = closestHex.color;
-										//closestHex.color = this.selectedHex.color;
-										//this.selectedHex.color = swpColor;
 										closestHex.swap = this.selectedHex;
 										this.selectedHex.swap = closestHex;
 										this.Draw.toBeCleared.push(closestHex);
-										//this.Draw.toBeCleared.push(this.selectedHex);
 								}
 
 								this.Draw.ClearCountDown = 7;
