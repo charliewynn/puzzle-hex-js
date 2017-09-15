@@ -67,7 +67,9 @@ function Game(width, height, canvas){
 								this.selectedHex.color = swpColor;
 								//swapped
 								//check if valid
-								if(!closestHex.CheckMatch() && !this.selectedHex.CheckMatch()) {
+								var anyMatches = closestHex.CheckMatch();
+								anyMatches = this.selectedHex.CheckMatch() || anyMatch;
+								if(!anyMatches) {
 										closestHex.swap = this.selectedHex;
 										this.selectedHex.swap = closestHex;
 										this.Draw.toBeCleared.push(closestHex);
