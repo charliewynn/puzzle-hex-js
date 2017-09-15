@@ -228,11 +228,11 @@ var hexColors = {
  blue : "rgba(0,0,255,1)",
  black : "rgba(0,0,0,1)",
  white : "rgba(255,255,255,1)",
- yellow : "rgba(200,200,0,1)",
- purple : 'purple',
- brown : 'brown',
- grey : 'grey',
- teal : 'teal'
+ yellow : "rgba(200,200,0,1)"//,
+ //purple : 'purple',
+ //brown : 'brown',
+ //grey : 'grey',
+ //teal : 'teal'
 };
 var colorArr = Object.getOwnPropertyNames(hexColors);
 

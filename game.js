@@ -7,21 +7,25 @@ function didLoad(){
 		canvas.setAttribute('height', window.innerHeight);
 
 		var w = 4, h = 21;
+		var debug = false;
 		var params = location.href.split('?')[1];
 		if(params) {
 				params = params.split('&');
 				w=(params.map(function(p){ return p.split('='); }).filter(function(p){ return p[0] == 'w'; })[0] || ['',w])[1];
 				h=(params.map(function(p){ return p.split('='); }).filter(function(p){ return p[0] == 'h'; })[0] || ['',h])[1];
+				debug=(params.map(function(p){ return p.split('='); }).filter(function(p){ return p[0] == 'd'; })[0] || ['',false])[1];
 		}
 
-		new Game(w, h, canvas);
+		if(debug) {
+				window.game = new Game(w, h, canvas);
+				window.game.debug = true;
+		} else {
+				new Game(w,h,canvas);
+		}
 }
 
 function Game(width, height, canvas){
 		var game = this;
-
-		 ///just for testing
-		if(true) window.game = game;
 
 		this.Geometry = new Geometry();
 		var size = new Point(window.innerWidth, window.innerHeight);

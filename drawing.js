@@ -9,7 +9,7 @@ function Drawing(canvas, context)
 		if(this.ClearCountDown > 0) this.ClearCountDown--;
 		this.canvas.width = this.canvas.width;
 		for(h in game.Hexs)
-			this.hex(game.Hexs[h], hexSize, this.toBeCleared.indexOf(game.Hexs[h]) < 0);
+			this.hex(game.Hexs[h], hexSize, this.toBeCleared.indexOf(game.Hexs[h]) < 0, game.debug);
 
 		if(this.ClearCountDown == 1) {
 			var nextToBeCleared = [];
@@ -85,7 +85,7 @@ function Drawing(canvas, context)
 		this.context.closePath();
 		this.context.fill();
 	};
-	this.hex = function(hex, size, showColor){
+	this.hex = function(hex, size, showColor, debug){
 		var c = this.context;
 		var x0 = hex.loc.x;
 		var x1 = hex.loc.x + size.x/4;
@@ -128,6 +128,7 @@ function Drawing(canvas, context)
 			if(hex.highlight == 0) delete hex.highlight;
 		}
 		
+		if(debug)
 			this.centerText(hex.center, hex.ndx.join(' '), hex.color == hexColors.black ? 'white' : 'black');
 
 	};
