@@ -8,7 +8,7 @@ function Drawing(canvas, context)
 	this.render = function(game){
 		if(this.ClearCountDown > 0) this.ClearCountDown--;
 		this.canvas.width = this.canvas.width;
-		this.strokeText(new Point(0,15), game.ver, 'black');
+		this.strokeText(new Point(0,15), game.ver, 'black', '15px sans-serif');
 		for(h in game.Hexs)
 			this.hex(game.Hexs[h], hexSize, this.toBeCleared.indexOf(game.Hexs[h]) < 0, game.debug);
 
