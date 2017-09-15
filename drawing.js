@@ -6,6 +6,7 @@ function Drawing(canvas, context)
 	this.ClearCountDown = 0;
 	this.toBeCleared = [];
 	this.render = function(game){
+		this.strokeText(new Point(0,10), game.ver, 'black');
 		if(this.ClearCountDown > 0) this.ClearCountDown--;
 		this.canvas.width = this.canvas.width;
 		for(h in game.Hexs)
