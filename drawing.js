@@ -6,9 +6,9 @@ function Drawing(canvas, context)
 	this.ClearCountDown = 0;
 	this.toBeCleared = [];
 	this.render = function(game){
-		this.strokeText(new Point(0,10), game.ver, 'black');
 		if(this.ClearCountDown > 0) this.ClearCountDown--;
 		this.canvas.width = this.canvas.width;
+		this.strokeText(new Point(0,15), game.ver, 'black');
 		for(h in game.Hexs)
 			this.hex(game.Hexs[h], hexSize, this.toBeCleared.indexOf(game.Hexs[h]) < 0, game.debug);
 
