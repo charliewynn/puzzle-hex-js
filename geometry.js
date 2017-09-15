@@ -37,7 +37,7 @@ function Geometry()
 		 if(this.neighbors[np[0]].color == this.neighbors[np[1]].color &&
 			this.neighbors[np[0]].color == color) {
 			//start of group found!
-			console.log('Group Found');
+			//console.log('Group Found');
 			matchFound = true;
 			break;
 		 }
@@ -183,6 +183,41 @@ function Geometry()
  function log() {
 	//console.log.apply(null,arguments);
  }
+
+ this.CheckForMoves = function(Hexs) {
+
+	for(var h in Hexs) {
+	 var hex = Hexs[h];
+	 for(var n in hex.neighbors) {
+		n = hex.neighbors[n];
+		if(n.color == hex.color) {
+		 //pair found.. if they're mutual neighbor(s) have a neighbor
+		 //with the same color we have a move
+		 for(var hn in hex.neighbors){ 
+			var hexNeighbor = hex.neighbors[hn];
+			for(var hnn in n.neighbors){
+				var hexMatchNeighbor = n.neighbors[hnn];
+			 	if(hexNeighbor.ndx == hexMatchNeighbor.ndx) {
+					for(var hnnn in hexMatchNeighbor.neighbors) {
+					 hnnn = hexMatchNeighbor.neighbors[hnnn];
+					 if(hnnn.color == hex.color
+						&& hnnn.ndx != hex.ndx
+						&& hnnn.ndx != n.ndx)
+					 {
+						console.log('hex: ' + hex.ndx.join(' '));
+						console.log('friend: ' + n.ndx.join(' '));
+						console.log('mutual: ' + hexMatchNeighbor.ndx.join(' '));
+						console.log('match: ' + hnnn.ndx.join(' '));
+						return true;
+					 }
+					}
+				}
+			}
+		 }
+		}
+	 }
+	}
+ }
 }
 var randomHexColor = function(){
  return hexColors[colorArr[Math.floor(Math.random()*colorArr.length)]];
@@ -193,7 +228,11 @@ var hexColors = {
  blue : "rgba(0,0,255,1)",
  black : "rgba(0,0,0,1)",
  white : "rgba(255,255,255,1)",
- yellow : "rgba(200,200,0,1)"
+ yellow : "rgba(200,200,0,1)",
+ purple : 'purple',
+ brown : 'brown',
+ grey : 'grey',
+ teal : 'teal'
 };
 var colorArr = Object.getOwnPropertyNames(hexColors);
 

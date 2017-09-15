@@ -19,6 +19,10 @@ function didLoad(){
 
 function Game(width, height, canvas){
 		var game = this;
+
+		 ///just for testing
+		if(true) window.game = game;
+
 		this.Geometry = new Geometry();
 		var size = new Point(window.innerWidth, window.innerHeight);
 		this.Hexs = this.Geometry.GenerateHex(size, new Point(width, height));
@@ -30,7 +34,7 @@ function Game(width, height, canvas){
 		setInterval(function(){ _this.Draw.render(_this); }, 20);
 
 		this.MouseDown = function(e) {
-				if(this.Draw.ClearCountDown) return;
+				if(this.Draw.ClearCountDown > 0) return;
 				var clickPoint = new Point(getCursorPosition(e));
 				var closestHex;
 				var closestDist = 1000;

@@ -62,6 +62,14 @@ function Drawing(canvas, context)
 			}
 
 		}
+		//if we're done doing matches...
+		if(this.ClearCountDown == 0) {
+			//check for useable moves
+			if(!game.Geometry.CheckForMoves(game.Hexs)) {
+				alert("game over");
+			}
+			this.ClearCountDown --;
+		}
 	};
 	this.circle = function(loc, radius, color) {
 		this.context.beginPath();
@@ -119,6 +127,8 @@ function Drawing(canvas, context)
 			hex.highlight--;
 			if(hex.highlight == 0) delete hex.highlight;
 		}
+		
+			this.centerText(hex.center, hex.ndx.join(' '), hex.color == hexColors.black ? 'white' : 'black');
 
 	};
 	this.centerText = function(loc, text, color, font)
