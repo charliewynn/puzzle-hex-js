@@ -38,7 +38,7 @@ function Drawing(canvas, context)
 			this.toBeCleared = nextToBeCleared;
 			if(this.toBeCleared.length)
 			{
-				this.ClearCountDown = 6;}
+				this.ClearCountDown = 3;}
 		} else if (this.ClearCountDown == 0) {
 			//we're done swapping, time to check for 'free' groups
 			var FoundMatch = false;
