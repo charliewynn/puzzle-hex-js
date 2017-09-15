@@ -1,6 +1,9 @@
 function didLoad(){
 		document.documentElement.style.overflow = 'hidden';
 		document.body.scroll = 'no';
+		if(navigator.userAgent.match(/Android/i)){
+	    		window.scrollTo(0,1);
+ 		}
 
 		var canvas = document.getElementById("canvas");
 		canvas.setAttribute('width', window.innerWidth);
