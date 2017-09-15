@@ -29,7 +29,7 @@ function didLoad(){
 
 function Game(width, height, canvas){
 		var game = this;
-		game.ver = '0.03';
+		game.ver = '0.04';
 
 		this.Geometry = new Geometry();
 		var size = new Point(window.innerWidth, window.innerHeight);
