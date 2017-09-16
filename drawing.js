@@ -3,73 +3,16 @@ function Drawing(canvas, context)
 	this.canvas = canvas;
 	this.context = context;
 	this.colors = new colors();
-	this.ClearCountDown = 0;
-	this.toBeCleared = [];
 	this.render = function(game){
-		if(this.ClearCountDown > 0) this.ClearCountDown--;
 		this.canvas.width = this.canvas.width;
 		this.drawText(new Point(2,16), game.ver, 'black', '14px sans-serif');
 		for(h in game.Hexs)
-			this.hex(game.Hexs[h], hexSize, this.toBeCleared.indexOf(game.Hexs[h]) < 0, game.debug);
-
-		if(this.ClearCountDown == 1) {
-			var nextToBeCleared = [];
-			for(var h in this.toBeCleared) {
-				var hex = this.toBeCleared[h];
-				if(hex.swap){
-					var swpColor = hex.color;
-					hex.color = hex.swap.color;
-					hex.swap.color = swpColor;
-					delete hex.swap;
-				}
-				else if(hex.next) {
-					hex.color = hex.next.color;
-					nextToBeCleared.push(hex.next);
-					delete hex.next;
-				}
-				else if(hex.neighbors.up){
-					//has up neighbor, but must have been marked
-					if(!hex.neighbors.up.next) hex.next = hex.neighbors.up
-					nextToBeCleared.push(hex);
-				}
-				else {
-					if(!hex.neighbors.down.next) hex.color = randomHexColor();
-				}
-			}
-			this.toBeCleared = nextToBeCleared;
-			if(this.toBeCleared.length)
-			{
-				this.ClearCountDown = 3;}
-		} else if (this.ClearCountDown == 0) {
-			//we're done swapping, time to check for 'free' groups
-			var FoundMatch = false;
-			for(var h in game.Hexs) {
-				FoundMatch = game.Hexs[h].CheckMatch() || FoundMatch;
-			}
-			if(FoundMatch) {
-
-				game.Draw.ClearCountDown = 7;
-				for(var h in game.Hexs) {
-					var hex = game.Hexs[h];
-					if(hex.marked) {
-						this.toBeCleared.push(hex);
-						var upN = hex.neighbors.up;
-						if(upN && !upN.marked) hex.next = upN;
-					}
-				}
-				for(var h in this.toBeCleared) {
-					delete this.toBeCleared[h].marked;
-				}
-			}
-
-		}
-		//if we're done doing matches...
-		if(this.ClearCountDown == 0) {
-			//check for useable moves
-			if(!game.Geometry.CheckForMoves(game.Hexs)) {
-				alert("game over");
-			}
-			this.ClearCountDown --;
+			this.hex(game.Hexs[h], hexSize, !game.Hexs[h].hideColor, game.debug);
+	};
+	this.Renderer = function(game) {
+		var _this = this;
+		return function() {
+			_this.render(game);
 		}
 	};
 	this.circle = function(loc, radius, color) {
