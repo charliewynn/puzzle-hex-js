@@ -16,6 +16,17 @@ function Drawing(canvas, context)
 		context.lineTo(canvas.width,canvas.height-85);
 		context.closePath();
 		context.stroke();
+		var HexColors = Object.getOwnPropertyNames(hexColors);
+		var menuHexSize = new Point(80/.866, 80);
+		var totalWidth = menuHexSize.x * (HexColors.length + 1);
+		var margin = (canvas.width - totalWidth)/2;
+		for(var i=0; i<HexColors.length; i++)
+		{
+			var hexRatio = .866;//76/90;
+			this.hex(new fakeHex(new Point(margin + i*(menuHexSize.x), canvas.height - menuHexSize.y), menuHexSize, HexColors[i], colors[i]), menuHexSize, true, false);
+		}
+		this.hex(new fakeHex(new Point(margin + HexColors.length*menuHexSize.x, canvas.height - menuHexSize.y), menuHexSize, 'purple'), menuHexSize, true, false);
+		
 	};
 	this.Renderer = function(Hexs, debug) {
 		var _this = this;
@@ -49,13 +60,13 @@ function Drawing(canvas, context)
 		var y2 = hex.loc.y + size.y;
 		var coords = 
 			[
-				[x1,y0],
-				[x2,y0],
-				[x3,y1],
-				[x2,y2],
-				[x1,y2],
-				[x0,y1]
-			];
+			[x1,y0],
+			[x2,y0],
+			[x3,y1],
+			[x2,y2],
+			[x1,y2],
+			[x0,y1]
+				];
 
 		c.beginPath();
 		c.moveTo(coords[0][0],coords[0][1]);
@@ -79,7 +90,7 @@ function Drawing(canvas, context)
 			hex.highlight--;
 			if(hex.highlight == 0) delete hex.highlight;
 		}
-		
+
 		if(debug)
 			this.centerText(hex.center, hex.ndx.join(' '), hex.color == hexColors.black ? 'white' : 'black');
 

@@ -1,3 +1,9 @@
+function fakeHex(loc, size, color) {
+	this.loc = loc;
+	this.size = size;
+	this.color = color;
+	this.center = new Point(loc.x+size.x/2, loc.y+size.y/2);
+}
 function Geometry()
 {
  this.Hex = function(loc, ndx, size) {

@@ -111,7 +111,7 @@ function Game(width, height, canvas, debug){
 
 		for(var hex in Hexs) {
 			var dist = Hexs[hex].center.dist(clickPoint);
-			if(dist < closestDist && dist < Hexs[hex].size.y) {
+			if(dist < closestDist && dist < Hexs[hex].size.x/2) {
 				closestDist = dist;
 				closestHex = Hexs[hex];
 			}
