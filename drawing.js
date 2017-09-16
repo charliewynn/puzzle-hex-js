@@ -1,36 +1,44 @@
 function Drawing(canvas, context)
 {
-	this.canvas = canvas;
-	this.context = context;
-	this.colors = new colors();
-	this.render = function(game){
-		this.canvas.width = this.canvas.width;
-		this.drawText(new Point(2,16), game.ver, 'black', '14px sans-serif');
-		for(h in game.Hexs)
-			this.hex(game.Hexs[h], hexSize, !game.Hexs[h].hideColor, game.debug);
+	var ver = '0.05';
+	var canvas = canvas;
+	var context = context;
+	this.render = function(Hexs, debug){
+		canvas.width = canvas.width;
+		this.drawText(new Point(2,16), ver, 'black', '14px sans-serif');
+		for(h in Hexs)
+			this.hex(Hexs[h], hexSize, !Hexs[h].hideColor, debug);
+		context.beginPath();
+		context.fillStyle = colors.black;
+		context.lineWidth=2;
+		context.strokeStyle=colors.white;
+		context.moveTo(0, canvas.height-85);
+		context.lineTo(canvas.width,canvas.height-85);
+		context.closePath();
+		context.stroke();
 	};
-	this.Renderer = function(game) {
+	this.Renderer = function(Hexs, debug) {
 		var _this = this;
 		return function() {
-			_this.render(game);
+			_this.render(Hexs, debug);
 		}
 	};
 	this.circle = function(loc, radius, color) {
-		this.context.beginPath();
-		this.context.fillStyle = color;
-		this.context.arc(loc.x, loc.y, radius, 0, Math.PI*2, false);
-		this.context.closePath();
-		this.context.fill();
+		context.beginPath();
+		context.fillStyle = color;
+		context.arc(loc.x, loc.y, radius, 0, Math.PI*2, false);
+		context.closePath();
+		context.fill();
 	};
 	this.rectangle = function(pt1, pt2, color){
-		this.context.beginPath();
-		this.context.fillStyle = color;
-		this.context.fillRect(pt1.x, pt1.y, pt2.x, pt2.y);
-		this.context.closePath();
-		this.context.fill();
+		context.beginPath();
+		context.fillStyle = color;
+		context.fillRect(pt1.x, pt1.y, pt2.x, pt2.y);
+		context.closePath();
+		context.fill();
 	};
 	this.hex = function(hex, size, showColor, debug){
-		var c = this.context;
+		var c = context;
 		var x0 = hex.loc.x;
 		var x1 = hex.loc.x + size.x/4;
 		var x2 = hex.loc.x + 3*size.x/4;
@@ -57,16 +65,16 @@ function Drawing(canvas, context)
 		c.stroke();
 
 		if(hex.selected) {
-			c.fillStyle = this.colors.white;
+			c.fillStyle = colors.white;
 			c.fill();
 		}
 
 		if(showColor){
-			this.circle(hex.center, hex.size.y*.6/2+1, this.colors.black);
+			this.circle(hex.center, hex.size.y*.6/2+1, colors.black);
 			this.circle(hex.center, hex.size.y*.6/2, hex.color);
 		}
 		if(hex.highlight) {
-			this.circle(hex.center, hex.size.y*.1*hex.highlight/2+1, this.colors.black);
+			this.circle(hex.center, hex.size.y*.1*hex.highlight/2+1, colors.black);
 			this.circle(hex.center, hex.size.y*.1*hex.highlight/2, hex.color);
 			hex.highlight--;
 			if(hex.highlight == 0) delete hex.highlight;
@@ -78,15 +86,15 @@ function Drawing(canvas, context)
 	};
 	this.centerText = function(loc, text, color, font)
 	{
-		var oldAlign = this.context.textAlign;
-		this.context.textAlign = 'center';
-		this.context.font = typeof font == 'undefined' ? 'italic bold 15px sans-serif' : font;
+		var oldAlign = context.textAlign;
+		context.textAlign = 'center';
+		context.font = typeof font == 'undefined' ? 'italic bold 15px sans-serif' : font;
 
-		this.context.fillStyle = color;
-		this.context.font = typeof font == 'undefined' ? 'italic bold 15px sans-serif' : font;
-		this.context.textBaseline = 'middle';
-		this.context.fillText(text, loc.x, loc.y);
-		this.context.textAlign = oldAlign;
+		context.fillStyle = color;
+		context.font = typeof font == 'undefined' ? 'italic bold 15px sans-serif' : font;
+		context.textBaseline = 'middle';
+		context.fillText(text, loc.x, loc.y);
+		context.textAlign = oldAlign;
 	}
 	this.drawText = function(loc, text, color, font)
 	{
@@ -102,7 +110,7 @@ function Drawing(canvas, context)
 		context.lineWidth = 9;
 		context.textBaseline = 'bottom';
 
-		context.fillStyle = this.colors.white;
+		context.fillStyle = colors.white;
 		context.lineWidth = 3;
 		context.fillText(text, loc.x, loc.y);
 
@@ -110,11 +118,11 @@ function Drawing(canvas, context)
 
 	};
 };
-function colors() {
-	this.red = "rgba(255,0,0,1)";
-	this.green = "rgba(34,139,34,1)";
-	this.blue = "rgba(0,0,255,1)";
-	this.black = "rgba(0,0,0,1)";
-	this.white = "rgba(255,255,255,1)";
-	this.yellow = "rgba(200,200,0,1)";
+var colors = {
+	red : "rgba(255,0,0,1)",
+	green : "rgba(34,139,34,1)",
+	blue : "rgba(0,0,255,1)",
+	black : "rgba(0,0,0,1)",
+	white : "rgba(255,255,255,1)",
+	yellow : "rgba(200,200,0,1)"
 }

@@ -9,7 +9,7 @@ function didLoad(){
 	canvas.setAttribute('width', window.innerWidth);
 	canvas.setAttribute('height', window.innerHeight);
 
-	var w = 4, h = 21;
+	var w = 4, h = 19;
 	var debug = location.href.indexOf('file://') === 0;
 	var params = location.href.split('?')[1];
 	if(params) {
@@ -20,26 +20,20 @@ function didLoad(){
 	}
 
 	if(debug) {
-		window.game = new Game(w, h, canvas);
-		window.game.debug = true;
+		window.game = new Game(w, h, canvas, true);
 	} else {
-		new Game(w,h,canvas);
+		new Game(w,h,canvas, false);
 	}
 }
 
-function Game(width, height, canvas){
-	var game = this;
-	game.ver = '0.04';
-
-	this.Geometry = new Geometry();
-	var size = new Point(window.innerWidth, window.innerHeight);
-	this.Hexs = this.Geometry.GenerateHex(size, new Point(width, height));
-	this.Draw = new Drawing(canvas, canvas.getContext('2d'));
+function Game(width, height, canvas, debug){
+	var geometry = new Geometry();
+	var Hexs = geometry.GenerateHex(new Point(width, height));
+	var Draw = new Drawing(canvas, canvas.getContext('2d'));
 
 	var ClearCountDown = 0;
 	var toBeCleared = [];
 
-	setInterval(this.Draw.Renderer(this), 20);
 	this.tick = function() {
 		if(ClearCountDown > 0) ClearCountDown--;
 		if(ClearCountDown == 1) {
@@ -78,14 +72,14 @@ function Game(width, height, canvas){
 		} else if (ClearCountDown == 0) {
 			//we're done swapping, time to check for 'free' groups
 			var FoundMatch = false;
-			for(var h in game.Hexs) {
-				FoundMatch = game.Hexs[h].CheckMatch() || FoundMatch;
+			for(var h in Hexs) {
+				FoundMatch = Hexs[h].CheckMatch() || FoundMatch;
 			}
 			if(FoundMatch) {
 
 				ClearCountDown = 7;
-				for(var h in game.Hexs) {
-					var hex = game.Hexs[h];
+				for(var h in Hexs) {
+					var hex = Hexs[h];
 					if(hex.marked) {
 						toBeCleared.push(hex);
 						var upN = hex.neighbors.up;
@@ -101,14 +95,13 @@ function Game(width, height, canvas){
 		//if we're done doing matches...
 		if(ClearCountDown == 0) {
 			//check for useable moves
-			if(!game.Geometry.CheckForMoves(game.Hexs)) {
+			if(!geometry.CheckForMoves(Hexs)) {
 				alert("game over");
 			}
 			ClearCountDown --;
 		}
 		//console.log('tick');
 	}
-	setInterval(this.tick,20);
 
 	this.MouseDown = function(e) {
 		if(ClearCountDown > 0) return;
@@ -116,11 +109,11 @@ function Game(width, height, canvas){
 		var closestHex;
 		var closestDist = 1000;
 
-		for(var hex in this.Hexs) {
-			var dist = this.Hexs[hex].center.dist(clickPoint);
-			if(dist < closestDist && dist < this.Hexs[hex].size.y) {
+		for(var hex in Hexs) {
+			var dist = Hexs[hex].center.dist(clickPoint);
+			if(dist < closestDist && dist < Hexs[hex].size.y) {
 				closestDist = dist;
-				closestHex = this.Hexs[hex];
+				closestHex = Hexs[hex];
 			}
 		}
 
@@ -149,8 +142,8 @@ function Game(width, height, canvas){
 				}
 
 				ClearCountDown = 7;
-				for(var h in this.Hexs) {
-					var hex = this.Hexs[h];
+				for(var h in Hexs) {
+					var hex = Hexs[h];
 					if(hex.marked) {
 						toBeCleared.push(hex);
 						var upN = hex.neighbors.up;
@@ -177,6 +170,8 @@ function Game(width, height, canvas){
 		this.selectedHex = closestHex;
 
 	}
+	canvas.addEventListener('mousedown', makeListener(this, this.MouseDown), false);
+	/*
 	this.MouseMove = function(e) {
 	}
 	this.MouseUp = function(e) {
@@ -204,14 +199,20 @@ function Game(width, height, canvas){
 
 		first.target.dispatchEvent(simulatedEvent);
 	}
-	canvas.addEventListener('mousedown', makeListener(this, this.MouseDown), false);
 
 	document.addEventListener("touchstart", makeListener(this, this.TouchHandler), true);
+	*/
 	function makeListener(self, listener) {
 		return function(e) {
 			return listener.call(self, e);
 		}
 	}
+
+	//30 fps -- sorry pcmr
+	setInterval(Draw.Renderer(Hexs, debug), 1000/30);
+
+	//game clock ~= 50 tps
+	setInterval(this.tick,20);
 }
 
 

@@ -53,8 +53,9 @@ function Geometry()
  }
 
 
- this.GenerateHex = function(size, numHex) {
+ this.GenerateHex = function(numHex) {
 	//I want this many rows/cols
+	var size = new Point(window.innerWidth, window.innerHeight-90);
 	var hex_rows = numHex.y;
 	var hex_cols = numHex.x;
 
