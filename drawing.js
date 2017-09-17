@@ -34,6 +34,7 @@ function Drawing_Init()
 			if(menuHex.type === 'color') {
 				this.hex(c, menuHex, menuHex.color);
 				this.hex(c, menuHex);
+				this.centerText(c, menuHex.center, menuHex.value, ['rgba(255,255,255,1)','rgba(200,200,0,1)'].indexOf(menuHex.color) >= 0 ? 'black' : 'white');
 			}
 			if(menuHex.type === 'menu') {
 				this.hex(c, menuHex);
@@ -88,7 +89,7 @@ function Drawing_Init()
 		context.textBaseline = 'bottom';
 		context.fillText(text, loc.x, loc.y);
 	};
-	this.centerText = function(loc, text, color, font)
+	this.centerText = function(context, loc, text, color, font)
 	{
 		var oldAlign = context.textAlign;
 		context.textAlign = 'center';

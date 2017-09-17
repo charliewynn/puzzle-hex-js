@@ -62,12 +62,12 @@
 		if(ClearCountDown > 0) return;
 		var clickPoint = new Point(getCursorPosition(e));
 		var closestHex;
-		var closestDist = 1000;
+		//var closestDist = 1000;
 
 		for(var hex in Hexs) {
 			var dist = Hexs[hex].center.dist(clickPoint);
-			if(dist < closestDist && dist < Hexs[hex].size.x/2) {
-				closestDist = dist;
+			if(/*dist < closestDist && */dist < Hexs[hex].size.x/2) {
+				//closestDist = dist;
 				closestHex = Hexs[hex];
 			}
 		}
@@ -76,8 +76,20 @@
 			if(this.selectedHex){
 				this.selectedHex.selected = false;
 				this.selectedHex = undefined;
+				Drawing.Render(canvas, Hexs, MenuHexs);
+				return;
 			}
-			Drawing.Render(canvas, Hexs, MenuHexs);
+			for(var hex in MenuHexs) {
+				var dist = MenuHexs[hex].center.dist(clickPoint);
+				if(/*dist < closestDist && */dist < MenuHexs[hex].size.x/2) {
+					if(MenuHexs[hex].type === 'color') {
+						console.log(MenuHexs[hex].color + " menu clicked");
+					}
+					if(MenuHexs[hex].type === 'menu') {
+						console.log("Menu Clicked");
+					}
+				}
+			}
 			return;
 		}
 
@@ -98,22 +110,29 @@
 				}
 
 				ClearCountDown = 7;
+				var numColor = {};
 				for(var h in Hexs) {
 					var hex = Hexs[h];
 					if(hex.marked) {
 						toBeCleared.push(hex);
+						numColor[hex.color] = (numColor[hex.color] || 0) + 1;
 						var upN = hex.neighbors.up;
 						if(upN && !upN.marked) hex.next = upN;
 						//hex.color = 'purple';
 					}
 				}
+				console.log(numColor);
+				for(var color in Object.getOwnPropertyNames(numColor))
+				{
+					var menuHex = MenuHexs.filter(function(h) { return h.color == Object.getOwnPropertyNames(numColor)[color]; })[0];
+					menuHex.value += numColor[Object.getOwnPropertyNames(numColor)[color]];
+				}
 				for(var h in toBeCleared) {
 					delete toBeCleared[h].marked;
 				}
-				delete hex.marked
-					//otherwise undo
+				delete hex.marked;
 
-					this.selectedHex.selected = false;
+				this.selectedHex.selected = false;
 				this.selectedHex = undefined;
 				Drawing.Render(canvas, Hexs, MenuHexs);
 				requestAnimationFrame(animate);
@@ -173,13 +192,21 @@
 			if(FoundMatch) {
 
 				ClearCountDown = 7;
+				var numColor = {};
 				for(var h in Hexs) {
 					var hex = Hexs[h];
 					if(hex.marked) {
 						toBeCleared.push(hex);
+						numColor[hex.color] = (numColor[hex.color] || 0) + 1;
 						var upN = hex.neighbors.up;
 						if(upN && !upN.marked) hex.next = upN;
 					}
+				}
+				console.log(numColor);
+				for(var color in Object.getOwnPropertyNames(numColor))
+				{
+					var menuHex = MenuHexs.filter(function(h) { return h.color == Object.getOwnPropertyNames(numColor)[color]; })[0];
+					menuHex.value += numColor[Object.getOwnPropertyNames(numColor)[color]];
 				}
 				for(var h in toBeCleared) {
 					delete toBeCleared[h].marked;
@@ -197,7 +224,7 @@
 		}
 		Drawing.Render(canvas, Hexs, MenuHexs);
 		if(ClearCountDown > 0)
-				requestAnimationFrame(animate);
+			requestAnimationFrame(animate);
 		//console.log('tick');
 	}
 })();

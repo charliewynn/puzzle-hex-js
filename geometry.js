@@ -206,7 +206,8 @@ function Geometry_init()
 			var hexRatio = .866;//76/90;
 			var fakehex = new fakeHex(new Point(margin + i*(menuHexSize.x), canvas.height - menuHexSize.y), menuHexSize);
 			fakehex.type = 'color';
-			fakehex.color = HexColors[i];
+			fakehex.value = 0;
+			fakehex.color = hexColors[HexColors[i]];
 			MenuHexs.push(fakehex);
 		}
 		var fakehex = new fakeHex(new Point(margin + HexColors.length*menuHexSize.x, canvas.height - menuHexSize.y), menuHexSize);
