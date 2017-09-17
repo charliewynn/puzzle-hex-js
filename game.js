@@ -34,7 +34,7 @@
 		canvas = document.getElementById("canvas");
 		canvas.setAttribute('width', window.innerWidth);
 		canvas.setAttribute('height', window.innerHeight);
-		var w = 4, h = 19;
+		var w = 4, h = 17;
 		var debug = location.href.indexOf('file://') === 0;
 		var params = location.href.split('?')[1];
 		if(params) {
