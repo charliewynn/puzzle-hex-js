@@ -1,54 +1,48 @@
-function Drawing(canvas, context)
+var Drawing = new Drawing_Init();
+function Drawing_Init()
 {
-	var ver = '0.05';
-	var canvas = canvas;
-	var context = context;
-	this.render = function(Hexs, debug){
-		canvas.width = canvas.width;
-		this.drawText(new Point(2,16), ver, 'black', '14px sans-serif');
-		for(h in Hexs)
-			this.hex(Hexs[h], hexSize, !Hexs[h].hideColor, debug);
-		context.beginPath();
-		context.fillStyle = colors.black;
-		context.lineWidth=2;
-		context.strokeStyle=colors.white;
-		context.moveTo(0, canvas.height-85);
-		context.lineTo(canvas.width,canvas.height-85);
-		context.closePath();
-		context.stroke();
-		var HexColors = Object.getOwnPropertyNames(hexColors);
-		var menuHexSize = new Point(80/.866, 80);
-		var totalWidth = menuHexSize.x * (HexColors.length + 1);
-		var margin = (canvas.width - totalWidth)/2;
-		for(var i=0; i<HexColors.length; i++)
-		{
-			var hexRatio = .866;//76/90;
-			this.hex(new fakeHex(new Point(margin + i*(menuHexSize.x), canvas.height - menuHexSize.y), menuHexSize, HexColors[i], colors[i]), menuHexSize, true, false);
+	this.RenderBackground = function(canvas, Hexs) {
+		var c = canvas.getContext('2d');
+		this.drawText(c, new Point(2,16), '0.06', 'black', '14px sans-serif');
+		for(var h in Hexs) {
+			var hex = Hexs[h];
+			this.hex(c, hex);
 		}
-		this.hex(new fakeHex(new Point(margin + HexColors.length*menuHexSize.x, canvas.height - menuHexSize.y), menuHexSize, 'purple'), menuHexSize, true, false);
-		
-	};
-	this.Renderer = function(Hexs, debug) {
-		var _this = this;
-		return function() {
-			_this.render(Hexs, debug);
+		c.beginPath();
+		c.lineWidth=2;
+		c.strokeStyle=colors.white;
+		c.moveTo(0, canvas.height-55);
+		c.lineTo(canvas.width,canvas.height-55);
+		c.closePath();
+		c.stroke();
+
+	}
+
+	this.Render = function(canvas, Hexs, Menu) {
+		var c = canvas.getContext('2d');
+
+		c.clearRect(0,0,canvas.width, canvas.height-60);
+		for(var h in Hexs) {
+			var hex = Hexs[h];
+			if(hex.selected)
+				this.circle(c, hex.center, hex.size.y*.6/2+8, colors.white);
+			this.circle(c, hex.center, hex.size.y*.6/2+1, colors.black);
+			this.circle(c, hex.center, hex.size.y*.6/2, hex.color);
 		}
-	};
-	this.circle = function(loc, radius, color) {
-		context.beginPath();
-		context.fillStyle = color;
-		context.arc(loc.x, loc.y, radius, 0, Math.PI*2, false);
-		context.closePath();
-		context.fill();
-	};
-	this.rectangle = function(pt1, pt2, color){
-		context.beginPath();
-		context.fillStyle = color;
-		context.fillRect(pt1.x, pt1.y, pt2.x, pt2.y);
-		context.closePath();
-		context.fill();
-	};
-	this.hex = function(hex, size, showColor, debug){
+		for(var m in Menu) {
+			var menuHex = Menu[m];
+			if(menuHex.type === 'color') {
+				this.hex(c, menuHex, menuHex.color);
+				this.hex(c, menuHex);
+			}
+			if(menuHex.type === 'menu') {
+				this.hex(c, menuHex);
+			}
+		}
+
+	}
+	this.hex = function(context, hex, fillColor) {
+		var size = hex.size;
 		var c = context;
 		var x0 = hex.loc.x;
 		var x1 = hex.loc.x + size.x/4;
@@ -73,7 +67,65 @@ function Drawing(canvas, context)
 		for(var i=1; i<coords.length; i++)
 			c.lineTo(coords[i][0],coords[i][1]);
 		c.closePath();
-		c.stroke();
+		if(fillColor) {
+			c.fillStyle = fillColor;
+			c.fill();
+		} else {
+			c.stroke();
+		}
+	}
+	this.circle = function(context, loc, radius, color) {
+		context.beginPath();
+		context.fillStyle = color;
+		context.arc(loc.x, loc.y, radius, 0, Math.PI*2, false);
+		context.closePath();
+		context.fill();
+	};
+	this.drawText = function(context, loc, text, color, font)
+	{
+		context.fillStyle = color;
+		context.font = typeof font == 'undefined' ? 'italic bold 15px sans-serif' : font;
+		context.textBaseline = 'bottom';
+		context.fillText(text, loc.x, loc.y);
+	};
+	this.centerText = function(loc, text, color, font)
+	{
+		var oldAlign = context.textAlign;
+		context.textAlign = 'center';
+		context.font = typeof font == 'undefined' ? 'italic bold 15px sans-serif' : font;
+
+		context.fillStyle = color;
+		context.font = typeof font == 'undefined' ? 'italic bold 15px sans-serif' : font;
+		context.textBaseline = 'middle';
+		context.fillText(text, loc.x, loc.y);
+		context.textAlign = oldAlign;
+	}
+}
+
+function oldDrawing(canvas, context){
+	var ver = '0.05';
+	var canvas = canvas;
+	var context = context;
+	this.render = function(Hexs, debug){
+		canvas.width = canvas.width;
+		for(h in Hexs)
+			this.hex(Hexs[h], hexSize, !Hexs[h].hideColor, debug);
+
+	};
+	this.Renderer = function(Hexs, debug) {
+		var _this = this;
+		return function() {
+			_this.render(Hexs, debug);
+		}
+	};
+	this.rectangle = function(pt1, pt2, color){
+		context.beginPath();
+		context.fillStyle = color;
+		context.fillRect(pt1.x, pt1.y, pt2.x, pt2.y);
+		context.closePath();
+		context.fill();
+	};
+	this.hex = function(hex, size, showColor, debug){
 
 		if(hex.selected) {
 			c.fillStyle = colors.white;
@@ -94,25 +146,6 @@ function Drawing(canvas, context)
 		if(debug)
 			this.centerText(hex.center, hex.ndx.join(' '), hex.color == hexColors.black ? 'white' : 'black');
 
-	};
-	this.centerText = function(loc, text, color, font)
-	{
-		var oldAlign = context.textAlign;
-		context.textAlign = 'center';
-		context.font = typeof font == 'undefined' ? 'italic bold 15px sans-serif' : font;
-
-		context.fillStyle = color;
-		context.font = typeof font == 'undefined' ? 'italic bold 15px sans-serif' : font;
-		context.textBaseline = 'middle';
-		context.fillText(text, loc.x, loc.y);
-		context.textAlign = oldAlign;
-	}
-	this.drawText = function(loc, text, color, font)
-	{
-		context.fillStyle = color;
-		context.font = typeof font == 'undefined' ? 'italic bold 15px sans-serif' : font;
-		context.textBaseline = 'bottom';
-		context.fillText(text, loc.x, loc.y);
 	};
 	this.strokeText = function(loc, text, color, font)
 	{
