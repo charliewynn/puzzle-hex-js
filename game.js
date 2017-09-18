@@ -59,14 +59,14 @@
 	ClearCountDown = 0;
 
 	function click(e) {
+		//if we're animating, don't allow clicks
 		if(ClearCountDown > 0) return;
 		var clickPoint = new Point(getCursorPosition(e));
 		var closestHex;
-		//var closestDist = 1000;
 
 		for(var hex in Hexs) {
 			var dist = Hexs[hex].center.dist(clickPoint);
-			if(/*dist < closestDist && */dist < Hexs[hex].size.x/2) {
+			if(dist < Hexs[hex].size.x/2) {
 				//closestDist = dist;
 				closestHex = Hexs[hex];
 			}
@@ -81,7 +81,7 @@
 			}
 			for(var hex in MenuHexs) {
 				var dist = MenuHexs[hex].center.dist(clickPoint);
-				if(/*dist < closestDist && */dist < MenuHexs[hex].size.x/2) {
+				if(dist < MenuHexs[hex].size.x/2) {
 					if(MenuHexs[hex].type === 'color') {
 						console.log(MenuHexs[hex].color + " menu clicked");
 					}
@@ -110,23 +110,18 @@
 				}
 
 				ClearCountDown = 7;
-				var numColor = {};
 				for(var h in Hexs) {
 					var hex = Hexs[h];
 					if(hex.marked) {
 						toBeCleared.push(hex);
-						numColor[hex.color] = (numColor[hex.color] || 0) + 1;
+						var menuHex = MenuHexs.filter(function(h) { return h.color == hex.color; })[0];
+						menuHex.ToBeSummed++;
+						menuHex.SumSource.push(hex.center);
 						var upN = hex.neighbors.up;
 						if(upN && !upN.marked) hex.next = upN;
-						//hex.color = 'purple';
 					}
 				}
-				console.log(numColor);
-				for(var color in Object.getOwnPropertyNames(numColor))
-				{
-					var menuHex = MenuHexs.filter(function(h) { return h.color == Object.getOwnPropertyNames(numColor)[color]; })[0];
-					menuHex.value += numColor[Object.getOwnPropertyNames(numColor)[color]];
-				}
+				sumMarked();
 				for(var h in toBeCleared) {
 					delete toBeCleared[h].marked;
 				}
@@ -146,6 +141,9 @@
 		closestHex.selected = true;
 		this.selectedHex = closestHex;
 		Drawing.Render(canvas, Hexs, MenuHexs);
+	}
+	function animateDust() {
+
 	}
 
 	function animate() {
@@ -169,7 +167,8 @@
 				else if(hex.neighbors.up){
 					//has up neighbor, but must have been marked
 					if(!hex.neighbors.up.next) hex.next = hex.neighbors.up
-						nextToBeCleared.push(hex);
+					else hex.next = hex.neighbors.up;
+					nextToBeCleared.push(hex);
 				}
 				else {
 					if(!hex.neighbors.down.next) hex.color = randomHexColor();
@@ -192,22 +191,18 @@
 			if(FoundMatch) {
 
 				ClearCountDown = 7;
-				var numColor = {};
 				for(var h in Hexs) {
 					var hex = Hexs[h];
 					if(hex.marked) {
 						toBeCleared.push(hex);
-						numColor[hex.color] = (numColor[hex.color] || 0) + 1;
+						var menuHex = MenuHexs.filter(function(h) { return h.color == hex.color; })[0];
+						menuHex.ToBeSummed++;
+						menuHex.SumSource.push(hex.center);
 						var upN = hex.neighbors.up;
 						if(upN && !upN.marked) hex.next = upN;
 					}
 				}
-				console.log(numColor);
-				for(var color in Object.getOwnPropertyNames(numColor))
-				{
-					var menuHex = MenuHexs.filter(function(h) { return h.color == Object.getOwnPropertyNames(numColor)[color]; })[0];
-					menuHex.value += numColor[Object.getOwnPropertyNames(numColor)[color]];
-				}
+				sumMarked();
 				for(var h in toBeCleared) {
 					delete toBeCleared[h].marked;
 				}
@@ -225,23 +220,14 @@
 		Drawing.Render(canvas, Hexs, MenuHexs);
 		if(ClearCountDown > 0)
 			requestAnimationFrame(animate);
-		//console.log('tick');
+	}
+	function sumMarked(numColor) {
+		for(var mh in MenuHexs) {
+			MenuHexs[mh].value += MenuHexs[mh].ToBeSummed;
+			MenuHexs[mh].ToBeSummed = 0;
+		}
 	}
 })();
-
-
-function Game(width, height, canvas, debug){
-	var ClearCountDown = 0;
-	var toBeCleared = [];
-
-	this.tick = function() {
-	}
-
-	this.MouseDown = function(e) {
-	}
-
-}
-
 
 function getCursorPosition(e) {
 	var x, y;
