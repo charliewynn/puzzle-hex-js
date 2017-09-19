@@ -207,6 +207,8 @@ function Geometry_init()
 			var fakehex = new fakeHex(new Point(margin + i*(menuHexSize.x), canvas.height - menuHexSize.y), menuHexSize);
 			fakehex.type = 'color';
 			fakehex.value = 0;
+			fakehex.ToBeSummed = 0;
+			fakehex.SumSource = [];
 			fakehex.color = hexColors[HexColors[i]];
 			MenuHexs.push(fakehex);
 		}
